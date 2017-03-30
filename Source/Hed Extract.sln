@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hed Extract", "Hed Extract\Hed Extract.csproj", "{AAFCCE3B-0D86-49A2-9E43-2C0990DEB4BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAFCCE3B-0D86-49A2-9E43-2C0990DEB4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAFCCE3B-0D86-49A2-9E43-2C0990DEB4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAFCCE3B-0D86-49A2-9E43-2C0990DEB4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAFCCE3B-0D86-49A2-9E43-2C0990DEB4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
