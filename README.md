@@ -24,8 +24,6 @@ Useage:
 		same folder as the original .hed and .wad file as it may attempt to overwrite them.
 
 
-
-
 Additional information:
 
 	-The current functionality is very simple and basic for the first version. In later versions it will
@@ -36,6 +34,7 @@ Additional information:
 
 
 Updates:
+
 	-As of Version 2, users can now extract different types of wads (such as datap and musicp to the same folder)
 	and build from this folder. If the user has more than one wad extracted into the base folder, they will be
 	prompted to select which they wish to build into a wad/hed file.
