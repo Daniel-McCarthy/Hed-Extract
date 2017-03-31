@@ -277,47 +277,40 @@ namespace Hed_Extract
                 progressBar1.Maximum = names.Length * 2;
                 progressBar1.Visible = true;
 
-                if (names.Length > 0)
+
+                FileStream newHed = new FileStream(hedWadDirectory + '\\' + wadName + ".hed", FileMode.Create);
+                BinaryWriter bwHed = new BinaryWriter(newHed);
+
+                FileStream newWad = new FileStream(hedWadDirectory + '\\' + wadName + ".wad", FileMode.Create);
+                BinaryWriter bwWad = new BinaryWriter(newWad);
+
+                int offset = 0;
+                bool final = false;
+
+                for (int i = 0; i < names.Length; i++)
                 {
+                    FileStream file = File.Open(names[i], FileMode.Open);
+                    int fileSize = (int)file.Length;
+                    names[i] = names[i].Replace(directory, "");                                            //remove user's directory from path to get file name
 
-                    FileStream newHed = new FileStream(hedWadDirectory + '\\' + wadName + ".hed", FileMode.Create);
-                    BinaryWriter bwHed = new BinaryWriter(newHed);
+                    if (i + 2 > names.Length) { final = true; }
 
-                    FileStream newWad = new FileStream(hedWadDirectory + '\\' + wadName + ".wad", FileMode.Create);
-                    BinaryWriter bwWad = new BinaryWriter(newWad);
+                    writeFileToHed(ref bwHed, names[i], fileSize, offset, final);
+                    writeFileToWad(ref bwWad, file, ref newWad, out offset, final);
 
-                    int offset = 0;
-                    bool final = false;
-
-                    for (int i = 0; i < names.Length; i++)
-                    {
-                        FileStream file = File.Open(names[i], FileMode.Open);
-                        int fileSize = (int)file.Length;
-                        names[i] = names[i].Replace(directory, "");                                            //remove user's directory from path to get file name
-
-                        if (i + 2 > names.Length) { final = true; }
-
-                        writeFileToHed(ref bwHed, names[i], fileSize, offset, final);
-                        writeFileToWad(ref bwWad, file, ref newWad, out offset, final);
-
-                        file.Close();
-                    }
-
-
-                    newHed.Close();
-                    bwHed.Close();
-                    newWad.Close();
-                    bwWad.Close();
-
-                    MessageBox.Show("Done building .hed and .wad file!");
-                    wadName = "";
-                    progressBar1.Visible = false;
-                    progressBar1.Value = 0;
+                    file.Close();
                 }
-                else
-                {
-                    MessageBox.Show("Error: No files detected in directory: " + directory);
-                }
+
+
+                newHed.Close();
+                bwHed.Close();
+                newWad.Close();
+                bwWad.Close();
+
+                MessageBox.Show("Done building .hed and .wad file!");
+                wadName = "";
+                progressBar1.Visible = false;
+                progressBar1.Value = 0;
             }
         }
 
