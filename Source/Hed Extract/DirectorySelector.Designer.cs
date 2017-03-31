@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectorySelector));
             this.directoryListBox = new System.Windows.Forms.ListBox();
-            this.selectButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // directoryListBox
@@ -41,22 +41,22 @@
             this.directoryListBox.Size = new System.Drawing.Size(260, 186);
             this.directoryListBox.TabIndex = 0;
             // 
-            // selectButton
+            // button1
             // 
-            this.selectButton.Location = new System.Drawing.Point(71, 211);
-            this.selectButton.Name = "selectButton";
-            this.selectButton.Size = new System.Drawing.Size(129, 38);
-            this.selectButton.TabIndex = 1;
-            this.selectButton.Text = "Select Folder to Build";
-            this.selectButton.UseVisualStyleBackColor = true;
-            this.selectButton.Click += new System.EventHandler(this.selectButton_Click);
+            this.button1.Location = new System.Drawing.Point(71, 211);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(129, 38);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Select Folder to Build";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // DirectorySelector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Controls.Add(this.selectButton);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.directoryListBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DirectorySelector";
@@ -68,6 +68,6 @@
         #endregion
 
         private System.Windows.Forms.ListBox directoryListBox;
-        private System.Windows.Forms.Button selectButton;
+        private System.Windows.Forms.Button button1;
     }
 }
