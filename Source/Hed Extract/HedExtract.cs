@@ -26,14 +26,14 @@ repeats until end
 
 namespace Hed_Extract
 {
-    public partial class Form1 : Form
+    public partial class HedExtract : Form
     {
 
         public FileStream headerFile;
         public FileStream wadFile;
         public string wadName = "";
 
-        public Form1()
+        public HedExtract()
         {
             InitializeComponent();
         }
@@ -47,7 +47,7 @@ namespace Hed_Extract
             {
                 string name = openFileDialog1.FileName;
 
-                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1); //file name w/out dirtectory or extension.
+                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1); //file name w/out directory or extension.
                 wadName = name;
 
                 string directory = openFileDialog1.FileName;
@@ -249,8 +249,9 @@ namespace Hed_Extract
 
         private void createFromFolder()
         {
-            string directory = openFolder('b'); //get user selected directory
+            string directory = openFolder('b');                                                             //get user selected directory
             string hedWadDirectory = openFolder('c');
+
 
             if (directory != "" && hedWadDirectory != "")
             {
@@ -261,7 +262,7 @@ namespace Hed_Extract
                 progressBar1.Visible = true;
 
                 wadName = names[0].Replace(directory + '\\', "");
-                wadName = wadName.Substring(0, wadName.IndexOf('\\')); //get name for file to create
+                wadName = wadName.Substring(0, wadName.IndexOf('\\'));                                      //get name for file to create
 
                 FileStream newHed = new FileStream(hedWadDirectory + '\\' + wadName + ".hed", FileMode.Create);
                 BinaryWriter bwHed = new BinaryWriter(newHed);
