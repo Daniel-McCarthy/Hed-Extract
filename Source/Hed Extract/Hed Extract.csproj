@@ -52,6 +52,12 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="DirectorySelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DirectorySelector.Designer.cs">
+      <DependentUpon>DirectorySelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="HedExtract.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +68,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DirectorySelector.resx">
+      <DependentUpon>DirectorySelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HedExtract.resx">
       <DependentUpon>HedExtract.cs</DependentUpon>
