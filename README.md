@@ -33,3 +33,9 @@ Additional information:
 
 	-The .hed file contains header data necessary for extracting the data contained in the .wad file. The
 	format specifications are detailed in the about window of the program.
+
+
+Updates:
+	-As of Version 2, users can now extract different types of wads (such as datap and musicp to the same folder)
+	and build from this folder. If the user has more than one wad extracted into the base folder, they will be
+	prompted to select which they wish to build into a wad/hed file.
