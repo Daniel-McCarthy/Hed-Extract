@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
@@ -37,7 +32,6 @@ namespace Hed_Extract
         public FileStream headerFile;
         public FileStream wadFile;
         public string wadName = "";
-        //private int offsetMultiplier;
 
         public Form1()
         {
@@ -178,15 +172,14 @@ namespace Hed_Extract
                         br.ReadBytes(4);
                     }
                 }
-                //MessageBox.Show("Hit end of file without error!");
 
                 br.Dispose();
                 br.Close();
 
-                //
+
                 progressBar1.Maximum = fileNames.Count;
                 progressBar1.Visible = true;
-                //
+
 
                 extractWad(fileNames, fileSizes, offsets);
 
@@ -270,10 +263,10 @@ namespace Hed_Extract
                 wadName = names[0].Replace(directory + '\\', "");
                 wadName = wadName.Substring(0, wadName.IndexOf('\\')); //get name for file to create
 
-                FileStream newHed = new FileStream(hedWadDirectory + '\\' + wadName + ".hed", FileMode.Create);        //TODO: get original file name
+                FileStream newHed = new FileStream(hedWadDirectory + '\\' + wadName + ".hed", FileMode.Create);
                 BinaryWriter bwHed = new BinaryWriter(newHed);
 
-                FileStream newWad = new FileStream(hedWadDirectory + '\\' + wadName + ".wad", FileMode.Create);     //TODO: get original file name
+                FileStream newWad = new FileStream(hedWadDirectory + '\\' + wadName + ".wad", FileMode.Create);
                 BinaryWriter bwWad = new BinaryWriter(newWad);
 
                 int offset = 0;
@@ -320,7 +313,7 @@ namespace Hed_Extract
             bw.Write(asciiName); //name
             bw.Write((byte)0); //one padding byte
 
-            while (headerSize % 4 != 0) //padding attempt
+            while (headerSize % 4 != 0) //padding if needed
             {
                 bw.Write((byte)0);
                 headerSize++;
@@ -328,10 +321,10 @@ namespace Hed_Extract
 
             if (final)
             {
-                bw.Write((byte)255); //FF
-                bw.Write((byte)255); //FF
-                bw.Write((byte)255); //FF
-                bw.Write((byte)255); //FF
+                bw.Write((byte)255); //FF FF FF FF to designate EOF
+                bw.Write((byte)255);
+                bw.Write((byte)255);
+                bw.Write((byte)255);
             }
             progressBar1.Value++;
         }
@@ -375,25 +368,21 @@ namespace Hed_Extract
 
         private void setMusicStreamModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //offsetMultiplier = 1;
             extractWadToFolder();
         }
 
         private void setMusicStreamModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //offsetMultiplier = 1;
             createFromFolder();
         }
 
         private void setDataModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //offsetMultiplier = 2048;
             extractWadToFolder();
         }
 
         private void setDataModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //offsetMultiplier = 2048;
             createFromFolder();
         }
 
@@ -414,33 +403,3 @@ namespace Hed_Extract
 }
 
 
-    //several  files start writing 0 bytes
-    //some names don't seem to have a '/' at the start, causing the directory to combine two folder names together
-    //probably an issue with reading the names in, at some point name and file sizes get messed up on read?
-
-    //found issue
-    //eventually file sizes show as 00 69 00 00
-    //program reads too many 00's and assumes 69 is start of size, causes program to start reading file off by one byte
-
-    //above issue solved
-    //new  issue,  files not extracting correctly, eventually gets misaligned.
-    //it seems the .wad file has some padding, likely into 2048 segments. First two files need no padding, because they're already
-    //2048 bytes. if we look at the offsets, it is likely to match up with the padding, it's not rounded for fun, it's rounded to match
-    //padding of 2048 bytes
-
-    //Feature Ideas:
-    //Extract files to folder of .hed/.wad file's name where the user selects
-    //That way when building the function can read that folder's name to get the name the files should be
-
-    //Write both .hed and .wad at same time, so only one file has to be open at a time. (Effiency bonus)
-    
-
-    //New problem
-    //it seems my build files aren't lining up with the original file
-    //the first issue I have spotted shows the original file having 4 more bytes of padding than mine does
-    //mine ends the string and goes straight unto the next header's file offset. It does no padding because the size
-    //is already divisible by 4, but perhaps theirs gets padding because the string allways has one padding block after it,
-    //and then 3 more are padded on to keep it divisible by 4
-
-    //fixed, ensured every string has at least one null character
-                                                                 
