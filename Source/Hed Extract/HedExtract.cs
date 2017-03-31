@@ -256,7 +256,7 @@ namespace Hed_Extract
             {
 
                 string[] subDirectories = Directory.GetDirectories(directory);                                  //retrieves all sub directories of user selected folder
-                MessageBox.Show(subDirectories.Length.ToString());
+
                 if (subDirectories.Length > 1)
                 {
                     DirectorySelector selector = new DirectorySelector();
