@@ -146,7 +146,7 @@
             this.MinimizeBox = false;
             this.Name = "HedExtract";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hed Extract ver. 2";
+            this.Text = "Hed Extract ver. 1";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
