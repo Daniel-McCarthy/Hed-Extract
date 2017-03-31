@@ -58,8 +58,12 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.selectButton);
             this.Controls.Add(this.directoryListBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "DirectorySelector";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Directory Selection";
             this.ResumeLayout(false);
 
