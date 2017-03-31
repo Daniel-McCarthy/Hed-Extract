@@ -47,11 +47,11 @@ namespace Hed_Extract
             {
                 string name = openFileDialog1.FileName;
 
-                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1);
+                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1); //file name w/out dirtectory or extension.
                 wadName = name;
 
                 string directory = openFileDialog1.FileName;
-                directory = directory.Substring(0, directory.LastIndexOf('\\') + 1);
+                directory = directory.Substring(0, directory.LastIndexOf('\\') + 1);                                    //directory w/out file name or extension.
 
                 if (File.Exists(directory + name + ".wad"))
                 {
