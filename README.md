@@ -38,3 +38,6 @@ Updates:
 	-As of Version 2, users can now extract different types of wads (such as datap and musicp to the same folder)
 	and build from this folder. If the user has more than one wad extracted into the base folder, they will be
 	prompted to select which they wish to build into a wad/hed file.
+	
+	-Version 2 now also supports extraction of both Music and Stream variant .hed/.wad files as well as datap .hed/.wads.
+	Currently building of this format is still not available until the padding for this variant is understood.
