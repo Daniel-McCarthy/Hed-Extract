@@ -128,7 +128,7 @@ namespace Hed_Extract
         }
 
         //Extract Hed Wad file to folder
-        private void extractWadToFolder()
+        private void extractWadToFolder(bool isDataP)
         {
 
             if (openFiles() || manualOpenFile())
@@ -181,7 +181,14 @@ namespace Hed_Extract
                 progressBar1.Visible = true;
 
 
-                extractWad(fileNames, fileSizes, offsets);
+                if (isDataP)
+                {
+                    extractWad(fileNames, fileSizes, offsets);
+                }
+                else
+                {
+                    extractMusicStreamWad(fileNames, fileSizes, offsets);
+                }
 
                 wadFile.Close();
                 headerFile.Close();
@@ -191,7 +198,7 @@ namespace Hed_Extract
             {
                 MessageBox.Show("Failed to open .hed and .wad files for extraction.");
             }
-        }
+        } //datap / Music / Stream
 
         string openFolder(char input)
         {
@@ -245,7 +252,7 @@ namespace Hed_Extract
             MessageBox.Show("Extraction complete!");
             progressBar1.Visible = false;
             progressBar1.Value = 0;
-        }
+        } //datap
 
         private void createFromFolder()
         {
@@ -319,7 +326,7 @@ namespace Hed_Extract
                     MessageBox.Show("Error: No files detected in directory: " + directory);
                 }
             }
-        }
+        } //datap
 
         void writeFileToHed(ref BinaryWriter bw, string name, int fileSize, int offset, bool final)
         {
@@ -347,7 +354,7 @@ namespace Hed_Extract
                 bw.Write((byte)255);
             }
             progressBar1.Value++;
-        }
+        } //datap
 
         void writeFileToWad(ref BinaryWriter bw, FileStream file, ref FileStream wadFile, out int offset, bool final)
         {
@@ -378,7 +385,7 @@ namespace Hed_Extract
 
             progressBar1.Value++;
 
-        }
+        } //datap
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -388,7 +395,7 @@ namespace Hed_Extract
 
         private void setMusicStreamModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            extractWadToFolder();
+            extractWadToFolder(false);
         }
 
         private void setMusicStreamModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
@@ -398,13 +405,105 @@ namespace Hed_Extract
 
         private void setDataModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            extractWadToFolder();
+            extractWadToFolder(true);
         }
 
         private void setDataModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createFromFolder();
         }
+
+
+
+        void extractMusicStreamWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
+        {
+            string directory = openFolder('e');
+            for (int i = 0; i < fileNames.Count; i++)
+            {
+                BinaryReader br = new BinaryReader(wadFile);
+
+
+                wadFile.Position = offsets[i];// * 2048;                                                //get to offset before readBytes
+
+                byte[] file = br.ReadBytes(fileSizes[i]);
+
+
+                string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
+
+                if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
+                {
+                    Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
+                }
+                File.WriteAllBytes(directory + '\\' + wadName + '\\' + fileNames[i], file);
+
+                progressBar1.Value++;
+            }
+
+            MessageBox.Show("Extraction complete!");
+            progressBar1.Visible = false;
+            progressBar1.Value = 0;
+        } //music/stream
+
+        /*
+        void writeFileToMusicStreamHed(ref BinaryWriter bw, string name, int fileSize, int offset, bool final)
+        {
+
+
+            int headerSize = 8 + name.Length + 1;                                               //+ 1 ensures every string has at least one padding byte
+            byte[] asciiName = System.Text.Encoding.ASCII.GetBytes(name);                       //forces bw to write exact bytes, no extra byte data
+
+            bw.Write(offset);//offset
+            bw.Write(fileSize); //size
+            bw.Write(asciiName); //name
+            bw.Write((byte)0); //one padding byte
+
+            while (headerSize % 4 != 0) //padding if needed
+            {
+                bw.Write((byte)0);
+                headerSize++;
+            }
+
+            if (final)
+            {
+                bw.Write((byte)255); //FF FF FF FF to designate EOF
+                bw.Write((byte)255);
+                bw.Write((byte)255);
+                bw.Write((byte)255);
+            }
+            progressBar1.Value++;
+        } //music/stream
+
+        void writeFileToMusicStreamWad(ref BinaryWriter bw, FileStream file, ref FileStream wadFile, out int offset, bool final)
+        {
+
+
+            int size = (int)file.Length;
+            int padding = 0;
+
+            file.CopyTo(wadFile);
+
+            if (!final)
+            {
+                if (size % 2048 != 0)
+                {
+                    while (padding * 2048 < size)
+                    {
+                        padding++;
+                    }
+
+                    int amountOfPadding = (padding * 2048) - size;
+                    string paddingString = new string((char)0, amountOfPadding);
+                    bw.Write(Encoding.ASCII.GetBytes(paddingString));
+
+                }
+            }
+
+            offset = (int)wadFile.Length / 2048;
+
+            progressBar1.Value++;
+
+        } //music/stream
+        */
 
         /*
         Way to refactor padding:

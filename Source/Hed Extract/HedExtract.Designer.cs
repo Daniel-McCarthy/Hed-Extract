@@ -92,14 +92,12 @@
             this.musicpstreamspToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extractWadToFolderToolStripMenuItem,
             this.buildWadFromFolderToolStripMenuItem});
-            this.musicpstreamspToolStripMenuItem.Enabled = false;
             this.musicpstreamspToolStripMenuItem.Name = "musicpstreamspToolStripMenuItem";
             this.musicpstreamspToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.musicpstreamspToolStripMenuItem.Text = "musicp/streamsp";
             // 
             // extractWadToFolderToolStripMenuItem
             // 
-            this.extractWadToFolderToolStripMenuItem.Enabled = false;
             this.extractWadToFolderToolStripMenuItem.Name = "extractWadToFolderToolStripMenuItem";
             this.extractWadToFolderToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.extractWadToFolderToolStripMenuItem.Text = "Extract Wad to Folder";
