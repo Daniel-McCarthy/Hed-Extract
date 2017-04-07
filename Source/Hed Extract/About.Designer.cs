@@ -110,9 +110,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(292, 296);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(172, 13);
+            this.label5.Size = new System.Drawing.Size(214, 13);
             this.label5.TabIndex = 7;
-            this.label5.Text = "For THP8 PSP .hed and .wad files.";
+            this.label5.Text = "For THUG2/THP8 PSP .hed and .wad files.";
             // 
             // About
             // 
