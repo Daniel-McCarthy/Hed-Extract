@@ -38,6 +38,31 @@ namespace Hed_Extract
             InitializeComponent();
         }
 
+        string openFolder(char input)
+        {
+            if (input == 'e')
+            {
+                folderBrowserDialog1.Description = "Select folder to Extract to:";
+            }
+
+            if (input == 'b')
+            {
+                folderBrowserDialog1.Description = "Select folder to Build from (same folder you extracted to):";
+            }
+
+            if (input == 'c')
+            {
+                folderBrowserDialog1.Description = "Please select folder you would like  have .wad and .hed files written to:";
+            }
+
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                return folderBrowserDialog1.SelectedPath;
+            }
+
+            return "";
+        }
+
         private bool openFiles()
         {
             openFileDialog1.Filter = "HED files (*.)|*.hed|WAD files (*.)|*.wad";
@@ -128,7 +153,7 @@ namespace Hed_Extract
         }
 
         //Extract Hed Wad file to folder
-        private void extractWadToFolder(bool isDataP)
+        private void extractWadToFolder()
         {
 
             if (openFiles() || manualOpenFile())
@@ -176,6 +201,7 @@ namespace Hed_Extract
                 br.Dispose();
                 br.Close();
 
+                bool isDataP = identifyWadType(ref fileSizes, ref offsets);
 
                 progressBar1.Maximum = fileNames.Count;
                 progressBar1.Visible = true;
@@ -199,31 +225,6 @@ namespace Hed_Extract
                 MessageBox.Show("Failed to open .hed and .wad files for extraction.");
             }
         } //datap / Music / Stream
-
-        string openFolder(char input)
-        {
-            if (input == 'e')
-            {
-                folderBrowserDialog1.Description = "Select folder to Extract to:";
-            }
-
-            if (input == 'b')
-            {
-                folderBrowserDialog1.Description = "Select folder to Build from (same folder you extracted to):";
-            }
-
-            if (input == 'c')
-            {
-                folderBrowserDialog1.Description = "Please select folder you would like  have .wad and .hed files written to:";
-            }
-
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                return folderBrowserDialog1.SelectedPath;
-            }
-
-            return "";
-        }
 
         void extractWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
         {
@@ -253,6 +254,35 @@ namespace Hed_Extract
             progressBar1.Visible = false;
             progressBar1.Value = 0;
         } //datap
+
+        void extractMusicStreamWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
+        {
+            string directory = openFolder('e');
+            for (int i = 0; i < fileNames.Count; i++)
+            {
+                BinaryReader br = new BinaryReader(wadFile);
+
+
+                wadFile.Position = offsets[i];// * 2048;                                                //get to offset before readBytes
+
+                byte[] file = br.ReadBytes(fileSizes[i]);
+
+
+                string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
+
+                if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
+                {
+                    Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
+                }
+                File.WriteAllBytes(directory + '\\' + wadName + '\\' + fileNames[i], file);
+
+                progressBar1.Value++;
+            }
+
+            MessageBox.Show("Extraction complete!");
+            progressBar1.Visible = false;
+            progressBar1.Value = 0;
+        } //music/stream
 
         private void createFromFolder()
         {
@@ -395,7 +425,7 @@ namespace Hed_Extract
 
         private void setMusicStreamModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            extractWadToFolder(false);
+            extractWadToFolder();
         }
 
         private void setMusicStreamModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
@@ -405,7 +435,7 @@ namespace Hed_Extract
 
         private void setDataModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            extractWadToFolder(true);
+            extractWadToFolder();
         }
 
         private void setDataModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
@@ -413,36 +443,18 @@ namespace Hed_Extract
             createFromFolder();
         }
 
-
-
-        void extractMusicStreamWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
+        private bool identifyWadType(ref List<int> sizes, ref List<int> offsets)
         {
-            string directory = openFolder('e');
-            for (int i = 0; i < fileNames.Count; i++)
+            for(int i = 0; i + 1 < offsets.Count; i++)
             {
-                BinaryReader br = new BinaryReader(wadFile);
-
-
-                wadFile.Position = offsets[i];// * 2048;                                                //get to offset before readBytes
-
-                byte[] file = br.ReadBytes(fileSizes[i]);
-
-
-                string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
-
-                if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
+                if(offsets[i + 1] < sizes[i])
                 {
-                    Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
+                    return true;                       //an offset smaller than the previous size detected, therefore matches datap format
                 }
-                File.WriteAllBytes(directory + '\\' + wadName + '\\' + fileNames[i], file);
-
-                progressBar1.Value++;
             }
 
-            MessageBox.Show("Extraction complete!");
-            progressBar1.Visible = false;
-            progressBar1.Value = 0;
-        } //music/stream
+            return false;                                //each offset is larger than the previous size, therefore matches music/stream/thug2 datap format
+        }
 
         /*
         void writeFileToMusicStreamHed(ref BinaryWriter bw, string name, int fileSize, int offset, bool final)
