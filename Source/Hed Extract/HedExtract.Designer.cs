@@ -31,16 +31,16 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HedExtract));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.datapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.extractToFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createFromFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.musicpstreamspToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.extractWadToFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buildWadFromFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.datapToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractDataPToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.createDataPToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.musicpstreamspToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractMusicpStreamspToolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.createMusicpStreamspToolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,58 +58,11 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.datapToolStripMenuItem,
-            this.musicpstreamspToolStripMenuItem});
+            this.datapToolStripMenuItem1,
+            this.musicpstreamspToolStripMenuItem4});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // datapToolStripMenuItem
-            // 
-            this.datapToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.extractToFolderToolStripMenuItem,
-            this.createFromFolderToolStripMenuItem});
-            this.datapToolStripMenuItem.Name = "datapToolStripMenuItem";
-            this.datapToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.datapToolStripMenuItem.Text = "datap";
-            // 
-            // extractToFolderToolStripMenuItem
-            // 
-            this.extractToFolderToolStripMenuItem.Name = "extractToFolderToolStripMenuItem";
-            this.extractToFolderToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.extractToFolderToolStripMenuItem.Text = "Extract Wad to Folder";
-            this.extractToFolderToolStripMenuItem.Click += new System.EventHandler(this.setDataModeAndExtractToolStripMenuItem_Click);
-            // 
-            // createFromFolderToolStripMenuItem
-            // 
-            this.createFromFolderToolStripMenuItem.Name = "createFromFolderToolStripMenuItem";
-            this.createFromFolderToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.createFromFolderToolStripMenuItem.Text = "Create Wad from Folder";
-            this.createFromFolderToolStripMenuItem.Click += new System.EventHandler(this.setDataModeAndBuildToolStripMenuItem_Click);
-            // 
-            // musicpstreamspToolStripMenuItem
-            // 
-            this.musicpstreamspToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.extractWadToFolderToolStripMenuItem,
-            this.buildWadFromFolderToolStripMenuItem});
-            this.musicpstreamspToolStripMenuItem.Name = "musicpstreamspToolStripMenuItem";
-            this.musicpstreamspToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.musicpstreamspToolStripMenuItem.Text = "musicp/streamsp";
-            // 
-            // extractWadToFolderToolStripMenuItem
-            // 
-            this.extractWadToFolderToolStripMenuItem.Name = "extractWadToFolderToolStripMenuItem";
-            this.extractWadToFolderToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.extractWadToFolderToolStripMenuItem.Text = "Extract Wad to Folder";
-            this.extractWadToFolderToolStripMenuItem.Click += new System.EventHandler(this.setMusicStreamModeAndExtractToolStripMenuItem_Click);
-            // 
-            // buildWadFromFolderToolStripMenuItem
-            // 
-            this.buildWadFromFolderToolStripMenuItem.Enabled = false;
-            this.buildWadFromFolderToolStripMenuItem.Name = "buildWadFromFolderToolStripMenuItem";
-            this.buildWadFromFolderToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.buildWadFromFolderToolStripMenuItem.Text = "Create Wad from Folder";
-            this.buildWadFromFolderToolStripMenuItem.Click += new System.EventHandler(this.setMusicStreamModeAndBuildToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -129,6 +82,56 @@
             this.progressBar1.Size = new System.Drawing.Size(260, 23);
             this.progressBar1.TabIndex = 1;
             this.progressBar1.Visible = false;
+            // 
+            // datapToolStripMenuItem1
+            // 
+            this.datapToolStripMenuItem1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.datapToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractDataPToolStripMenuItem2,
+            this.createDataPToolStripMenuItem3});
+            this.datapToolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.datapToolStripMenuItem1.Name = "datapToolStripMenuItem1";
+            this.datapToolStripMenuItem1.Size = new System.Drawing.Size(166, 22);
+            this.datapToolStripMenuItem1.Text = "datap";
+            // 
+            // extractDataPToolStripMenuItem2
+            // 
+            this.extractDataPToolStripMenuItem2.Name = "extractDataPToolStripMenuItem2";
+            this.extractDataPToolStripMenuItem2.Size = new System.Drawing.Size(200, 22);
+            this.extractDataPToolStripMenuItem2.Text = "Extract Wad to Folder";
+            this.extractDataPToolStripMenuItem2.Click += new System.EventHandler(this.setDataModeAndExtractToolStripMenuItem_Click);
+            // 
+            // createDataPToolStripMenuItem3
+            // 
+            this.createDataPToolStripMenuItem3.Name = "createDataPToolStripMenuItem3";
+            this.createDataPToolStripMenuItem3.Size = new System.Drawing.Size(200, 22);
+            this.createDataPToolStripMenuItem3.Text = "Create Wad from Folder";
+            this.createDataPToolStripMenuItem3.Click += new System.EventHandler(this.setDataModeAndBuildToolStripMenuItem_Click);
+            // 
+            // musicpstreamspToolStripMenuItem4
+            // 
+            this.musicpstreamspToolStripMenuItem4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.musicpstreamspToolStripMenuItem4.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractMusicpStreamspToolStripMenuItem5,
+            this.createMusicpStreamspToolStripMenuItem6});
+            this.musicpstreamspToolStripMenuItem4.Name = "musicpstreamspToolStripMenuItem4";
+            this.musicpstreamspToolStripMenuItem4.Size = new System.Drawing.Size(166, 22);
+            this.musicpstreamspToolStripMenuItem4.Text = "musicp/streamsp";
+            // 
+            // extractMusicpStreamspToolStripMenuItem5
+            // 
+            this.extractMusicpStreamspToolStripMenuItem5.Name = "extractMusicpStreamspToolStripMenuItem5";
+            this.extractMusicpStreamspToolStripMenuItem5.Size = new System.Drawing.Size(200, 22);
+            this.extractMusicpStreamspToolStripMenuItem5.Text = "Extract Wad to Folder";
+            this.extractMusicpStreamspToolStripMenuItem5.Click += new System.EventHandler(this.setMusicStreamModeAndExtractToolStripMenuItem_Click);
+            // 
+            // createMusicpStreamspToolStripMenuItem6
+            // 
+            this.createMusicpStreamspToolStripMenuItem6.Enabled = false;
+            this.createMusicpStreamspToolStripMenuItem6.Name = "createMusicpStreamspToolStripMenuItem6";
+            this.createMusicpStreamspToolStripMenuItem6.Size = new System.Drawing.Size(200, 22);
+            this.createMusicpStreamspToolStripMenuItem6.Text = "Create Wad from Folder";
+            this.createMusicpStreamspToolStripMenuItem6.Click += new System.EventHandler(this.setMusicStreamModeAndBuildToolStripMenuItem_Click);
             // 
             // HedExtract
             // 
@@ -160,12 +163,12 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem datapToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem extractToFolderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem createFromFolderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem musicpstreamspToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem extractWadToFolderToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem buildWadFromFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem datapToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem extractDataPToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem createDataPToolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem musicpstreamspToolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem extractMusicpStreamspToolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem createMusicpStreamspToolStripMenuItem6;
     }
 }
 
