@@ -99,6 +99,7 @@
             this.extractDataPToolStripMenuItem2.Name = "extractDataPToolStripMenuItem2";
             this.extractDataPToolStripMenuItem2.Size = new System.Drawing.Size(200, 22);
             this.extractDataPToolStripMenuItem2.Text = "Extract Wad to Folder";
+            this.extractDataPToolStripMenuItem2.ToolTipText = "Extract THUG2/THP8 Datap Format";
             this.extractDataPToolStripMenuItem2.Click += new System.EventHandler(this.setDataModeAndExtractToolStripMenuItem_Click);
             // 
             // createDataPToolStripMenuItem3
@@ -106,6 +107,7 @@
             this.createDataPToolStripMenuItem3.Name = "createDataPToolStripMenuItem3";
             this.createDataPToolStripMenuItem3.Size = new System.Drawing.Size(200, 22);
             this.createDataPToolStripMenuItem3.Text = "Create Wad from Folder";
+            this.createDataPToolStripMenuItem3.ToolTipText = "Create THP8 Datap Format";
             this.createDataPToolStripMenuItem3.Click += new System.EventHandler(this.setDataModeAndBuildToolStripMenuItem_Click);
             // 
             // musicpstreamspToolStripMenuItem4
@@ -123,6 +125,7 @@
             this.extractMusicpStreamspToolStripMenuItem5.Name = "extractMusicpStreamspToolStripMenuItem5";
             this.extractMusicpStreamspToolStripMenuItem5.Size = new System.Drawing.Size(200, 22);
             this.extractMusicpStreamspToolStripMenuItem5.Text = "Extract Wad to Folder";
+            this.extractMusicpStreamspToolStripMenuItem5.ToolTipText = "Extract Musicp / Streamsp / THUG2 Datap Format";
             this.extractMusicpStreamspToolStripMenuItem5.Click += new System.EventHandler(this.setMusicStreamModeAndExtractToolStripMenuItem_Click);
             // 
             // createMusicpStreamspToolStripMenuItem6
@@ -131,6 +134,7 @@
             this.createMusicpStreamspToolStripMenuItem6.Name = "createMusicpStreamspToolStripMenuItem6";
             this.createMusicpStreamspToolStripMenuItem6.Size = new System.Drawing.Size(200, 22);
             this.createMusicpStreamspToolStripMenuItem6.Text = "Create Wad from Folder";
+            this.createMusicpStreamspToolStripMenuItem6.ToolTipText = "Create Musicp / Streamsp / THUG2 Datap Format";
             this.createMusicpStreamspToolStripMenuItem6.Click += new System.EventHandler(this.setMusicStreamModeAndBuildToolStripMenuItem_Click);
             // 
             // HedExtract
