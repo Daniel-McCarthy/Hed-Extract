@@ -255,21 +255,34 @@ namespace Hed_Extract
             progressBar1.Value = 0;
         } //datap
 
+        /*
+         *  Method Name: extractMusicStreamWad
+         *  Purpose: Extracts file data from music/stream format .wad file to user selected folder.
+         *  Arguments: List<string> fileNames (List of each file/directory to extract), List<int> fileSizes (List of byte sizes of each file), List<int> offsets (List of positions of each file in the wad)
+         *  Return: None
+         */
         void extractMusicStreamWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
         {
+
+            BinaryReader br = new BinaryReader(wadFile);
+
+            //Prompt user for path to save .wad contents to.
             string directory = openFolder('e');
+
+            //Loop through to extract each file entry found in the .hed file
             for (int i = 0; i < fileNames.Count; i++)
             {
-                BinaryReader br = new BinaryReader(wadFile);
 
+                //Seek to location of next file in .wad
+                wadFile.Position = offsets[i];
 
-                wadFile.Position = offsets[i];// * 2048;                                                //get to offset before readBytes
-
+                //Read file in .wad to byte array
                 byte[] file = br.ReadBytes(fileSizes[i]);
 
-
+                //Retrieve file directory from file name
                 string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
 
+                //Create directory if it does not exist, then write the file data to folder
                 if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
                 {
                     Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
@@ -282,7 +295,7 @@ namespace Hed_Extract
             MessageBox.Show("Extraction complete!");
             progressBar1.Visible = false;
             progressBar1.Value = 0;
-        } //music/stream
+        }
 
         /*
          *  Method Name: createFromFolder
@@ -297,6 +310,7 @@ namespace Hed_Extract
 
             //Prompt user for directory to save the .hed and .wad files to.
             string hedWadDirectory = openFolder('c');
+
 
             if (directory != "" && hedWadDirectory != "")
             {
