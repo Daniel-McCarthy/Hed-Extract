@@ -443,17 +443,30 @@ namespace Hed_Extract
             createFromFolder();
         }
 
+        /*
+         *  Method Name: identifyWadType
+         *  Purpose: Determines format of .wad file by comparing the file sizes with the offsets.
+         *  Arguments: List<int> fileSizes (List of byte sizes of each file), List<int> offsets (List of positions of each file in the wad)
+         *  Return: boolean result (If true, then the format is a datap .wad. If false, it is a music/stream .wad format.)
+         */
         private bool identifyWadType(ref List<int> sizes, ref List<int> offsets)
         {
+            //Loops through the offsets and sizes to determine format
             for(int i = 0; i + 1 < offsets.Count; i++)
             {
                 if(offsets[i + 1] < sizes[i])
                 {
-                    return true;                       //an offset smaller than the previous size detected, therefore matches datap format
+                    //The offset is smaller than the previous size
+                    //Therefore it is a datap .wad which uses padding
+                    //to support large files with smaller size values
+                    return true;
                 }
             }
 
-            return false;                                //each offset is larger than the previous size, therefore matches music/stream/thug2 datap format
+            //Each offset is larger than the previous size.
+            //Therefore it is not using the datap padding format.
+            //It matches the music/stream/thug2 datap format.
+            return false;
         }
 
         /*
