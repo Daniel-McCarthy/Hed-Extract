@@ -226,21 +226,34 @@ namespace Hed_Extract
             }
         } //datap / Music / Stream
 
+        /*
+         *  Method Name: extractWad
+         *  Purpose: Extracts file data from datap format .wad file to user selected folder.
+         *  Arguments: List<string> fileNames (List of each file/directory to extract), List<int> fileSizes (List of byte sizes of each file), List<int> offsets (List of positions of each file in the wad)
+         *  Return: None
+         */
         void extractWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
         {
+
+            BinaryReader br = new BinaryReader(wadFile);
+
+            //Prompt user for path to save .wad contents to.
             string directory = openFolder('e');
+
+            //Loop through to extract each file entry found in the .hed file
             for (int i = 0; i < fileNames.Count; i++)
             {
-                BinaryReader br = new BinaryReader(wadFile);
 
+                //Seek to location of next file in .wad (The datap format pads the file data to a length divisible by 2048)
+                wadFile.Position = offsets[i] * 2048;
 
-                wadFile.Position = offsets[i] * 2048;                                                   //get to offset before readBytes
-
+                //Read file in .wad to byte array
                 byte[] file = br.ReadBytes(fileSizes[i]);
 
-
+                //Retrieve file directory from file name
                 string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
 
+                //Create directory if it does not exist, then write the file data to folder
                 if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
                 {
                     Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
@@ -253,7 +266,7 @@ namespace Hed_Extract
             MessageBox.Show("Extraction complete!");
             progressBar1.Visible = false;
             progressBar1.Value = 0;
-        } //datap
+        }
 
         /*
          *  Method Name: extractMusicStreamWad
