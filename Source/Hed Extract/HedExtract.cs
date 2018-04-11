@@ -386,15 +386,21 @@ namespace Hed_Extract
             progressBar1.Value++;
         } //datap
 
+        /*
+         *  Method Name: writeFileToWad
+         *  Purpose: Writes file data to a referenced datap .wad file. (This function writes each file segment individually).
+         *  Arguments: ref BinaryWriter bw (The binary writer for the .wad file), FileStream file (Stream for the file to be written), ref FileStream wadFile (Reference to wad file stream), out int offset (Sends out the offset of the file), bool final (Indicates if the more padding will be required.)
+         *  Return: None
+         */
         void writeFileToWad(ref BinaryWriter bw, FileStream file, ref FileStream wadFile, out int offset, bool final)
         {
-
 
             int size = (int)file.Length;
             int padding = 0;
 
             file.CopyTo(wadFile);
 
+            //Pads until the file length + padding is divisible by 2048 if more files need to be written
             if (!final)
             {
                 if (size % 2048 != 0)
@@ -411,11 +417,14 @@ namespace Hed_Extract
                 }
             }
 
+            //Sets out reference variable to offset value to be used for the .hed file.
+            //The file is padded to be divisible by 2048 bytes so that the offset value
+            //can be decreased heavily. The offset is file (length+padding) / 2048.
             offset = (int)wadFile.Length / 2048;
 
             progressBar1.Value++;
 
-        } //datap
+        }
 
         /*
          *  Method Name: aboutToolStripMenuItem_Click
