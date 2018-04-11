@@ -152,10 +152,15 @@ namespace Hed_Extract
 
         }
 
-        //Extract Hed Wad file to folder
+        /*
+         *  Method Name: extractWadToFolder
+         *  Purpose: Attempt to retrieve and load .hed and .wad file. If successful, attempt to extract to a user selected path.
+         *  Arguments: None
+         *  Return: boolean result (True if it was able to locate both. False if any or both failed to open.)
+         */
         private void extractWadToFolder()
         {
-
+            //Attempt to load .hed and .wad files
             if (openFiles() || manualOpenFile())
             {
 
@@ -163,36 +168,41 @@ namespace Hed_Extract
                 List<int> fileSizes = new List<int>();
                 List<int> offsets = new List<int>();
 
-
-
-
                 BinaryReader br = new BinaryReader(headerFile, Encoding.ASCII);
-                while (headerFile.Position != headerFile.Length)
+
+                while (headerFile.Position < headerFile.Length)
                 {
                     int curPos = (int)headerFile.Position;
 
+                    //Read file offset
                     offsets.Add(br.ReadInt32());
-                    fileSizes.Add(br.ReadInt32());                                              //file size
 
-                    List<char> fileName = new List<char>();                                     //file name
-                    while (br.ReadChar() != 0)                                                  //read until null character, makes sure there's at least one
+                    //Read file size
+                    fileSizes.Add(br.ReadInt32());
+
+                    //Read in string file name
+                    List<char> fileName = new List<char>();
+                    while (br.ReadChar() != 0)
                     {
                         headerFile.Seek(-1, SeekOrigin.Current);
                         fileName.Add(br.ReadChar());
                     }
+
                     char[] name = new char[fileName.Count];
                     fileName.CopyTo(name);
                     fileNames.Add(new string(name));
 
+                    //Skip padding. If the length of the entry is not divisible by 4 it will be padded until it is.
                     int newPos = (int)headerFile.Position;
 
-                    while ((newPos - curPos) % 4 != 0)                                          //ensures header size is divisible by 4
+                    while ((newPos - curPos) % 4 != 0)
                     {
                         br.ReadChar();
                         newPos++;
                     }
 
-                    if (headerFile.Length - headerFile.Position == 4)                           //Skips Last 4 bytes of FF
+                    //Skip 4 Byte 0xFFFFFFFF EOF signature
+                    if (headerFile.Length - headerFile.Position == 4)
                     {
                         br.ReadBytes(4);
                     }
@@ -209,10 +219,12 @@ namespace Hed_Extract
 
                 if (isDataP)
                 {
+                    //Extract DataP Wad Format
                     extractWad(fileNames, fileSizes, offsets);
                 }
                 else
                 {
+                    //Extract Music/Stream Wad Format
                     extractMusicStreamWad(fileNames, fileSizes, offsets);
                 }
 
