@@ -358,6 +358,12 @@ namespace Hed_Extract
             }
         } //datap
 
+        /*
+         *  Method Name: writeFileToHed
+         *  Purpose: Writes file information to a referenced datap .hed file. (This function writes each file segment individually).
+         *  Arguments: ref BinaryWriter bw (The binary writer for the .hed file), string name (The name of the file being written), int fileSize (The size of the file being written), int offset (The offset of the file being written), bool final (Indicates whether or not to write the EOF marker.)
+         *  Return: None
+         */
         void writeFileToHed(ref BinaryWriter bw, string name, int fileSize, int offset, bool final)
         {
 
@@ -378,13 +384,11 @@ namespace Hed_Extract
 
             if (final)
             {
-                bw.Write((byte)255); //FF FF FF FF to designate EOF
-                bw.Write((byte)255);
-                bw.Write((byte)255);
-                bw.Write((byte)255);
+                bw.Write((uint)0xFFFFFFFF); //FF FF FF FF to designate EOF
+                
             }
             progressBar1.Value++;
-        } //datap
+        }
 
         /*
          *  Method Name: writeFileToWad
@@ -516,9 +520,9 @@ namespace Hed_Extract
             int headerSize = 8 + name.Length + 1;                                               //+ 1 ensures every string has at least one padding byte
             byte[] asciiName = System.Text.Encoding.ASCII.GetBytes(name);                       //forces bw to write exact bytes, no extra byte data
 
-            bw.Write(offset);//offset
-            bw.Write(fileSize); //size
-            bw.Write(asciiName); //name
+            bw.Write(offset);
+            bw.Write(fileSize);
+            bw.Write(asciiName);
             bw.Write((byte)0); //one padding byte
 
             while (headerSize % 4 != 0) //padding if needed
