@@ -63,8 +63,15 @@ namespace Hed_Extract
             return "";
         }
 
+        /*
+         *  Method Name: openFiles
+         *  Purpose: This method prompts the user to select a .hed or .wad file. It then attempts to locate and load the other in the same directory.
+         *  Arguments: None
+         *  Return: boolean result (True if it was able to locate both. False if any or both failed to open.)
+         */
         private bool openFiles()
         {
+            //Set up Open File Dialogue to filter for .hed and .wad files
             openFileDialog1.Filter = "HED files (*.)|*.hed|WAD files (*.)|*.wad";
             openFileDialog1.InitialDirectory = Application.StartupPath;
 
@@ -72,15 +79,20 @@ namespace Hed_Extract
             {
                 string name = openFileDialog1.FileName;
 
-                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1); //file name w/out directory or extension.
+                //Retrieve file name without Path/Extension
+                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1);
                 wadName = name;
 
+                //Retrieve File directory without file name
                 string directory = openFileDialog1.FileName;
-                directory = directory.Substring(0, directory.LastIndexOf('\\') + 1);                                    //directory w/out file name or extension.
+                directory = directory.Substring(0, directory.LastIndexOf('\\') + 1);
 
-                if (File.Exists(directory + name + ".wad"))
+                //Attempt to open both .hed and .wad files
+
+                string wadPath = Path.Combine(directory, name + ".wad");
+                if (File.Exists(wadPath))
                 {
-                    wadFile = File.Open(directory + name + ".wad", FileMode.Open);
+                    wadFile = File.Open(wadPath, FileMode.Open);
                 }
                 else
                 {
@@ -88,9 +100,10 @@ namespace Hed_Extract
                     return false;
                 }
 
-                if (File.Exists(directory + name + ".hed"))
+                string hedPath = Path.Combine(directory, name + ".hed");
+                if (File.Exists(hedPath))
                 {
-                    headerFile = File.Open(directory + name + ".hed", FileMode.Open);
+                    headerFile = File.Open(hedPath, FileMode.Open);
                 }
                 else
                 {
@@ -102,8 +115,6 @@ namespace Hed_Extract
                 {
                     return true;
                 }
-
-
 
             }
 
