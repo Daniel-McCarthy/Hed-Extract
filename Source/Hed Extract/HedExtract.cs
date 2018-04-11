@@ -38,6 +38,12 @@ namespace Hed_Extract
             InitializeComponent();
         }
 
+        /*
+         *  Method Name: openFolder
+         *  Purpose: This method prompts the user to select a folder directory for a variety of purposes required for unpacking/packing
+         *  Arguments: char input (Selects folder type to prompt for)
+         *  Return: string path (This is either the selected directory, or an empty string if the prompt failed.)
+         */
         string openFolder(char input)
         {
             if (input == 'e')
