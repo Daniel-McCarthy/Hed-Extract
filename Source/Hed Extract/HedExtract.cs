@@ -284,15 +284,24 @@ namespace Hed_Extract
             progressBar1.Value = 0;
         } //music/stream
 
+        /*
+         *  Method Name: createFromFolder
+         *  Purpose: Creates datap format .hed and .wad archive from contents of user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void createFromFolder()
         {
-            string directory = openFolder('b');                                                             //get user selected directory
+            //Prompt user for directory to build the archive from.
+            string directory = openFolder('b');
+
+            //Prompt user for directory to save the .hed and .wad files to.
             string hedWadDirectory = openFolder('c');
 
             if (directory != "" && hedWadDirectory != "")
             {
-
-                string[] subDirectories = Directory.GetDirectories(directory);                                  //retrieves all sub directories of user selected folder
+                //Allow user to select a sub-directory of the selected folder if there are any
+                string[] subDirectories = Directory.GetDirectories(directory);
 
                 if (subDirectories.Length > 1)
                 {
@@ -306,10 +315,11 @@ namespace Hed_Extract
                     directory = subDirectories[0];
                 }
 
-                wadName = directory.Substring(directory.LastIndexOf('\\') + 1, directory.Length - directory.LastIndexOf('\\') - 1);     //retrieve fileName from folderName                                   //get name for file to create
+                //Use folder name for naming of new .hed and .wad files.
+                wadName = directory.Substring(directory.LastIndexOf('\\') + 1, directory.Length - directory.LastIndexOf('\\') - 1);
 
-
-                string[] names = Directory.GetFiles(directory + '\\', "*.*", SearchOption.AllDirectories); //get paths to every file in folder
+                //Retrieve file names for all files in selected folder and in the selected folder's subdirectories
+                string[] names = Directory.GetFiles(directory + '\\', "*.*", SearchOption.AllDirectories);
 
                 progressBar1.Maximum = names.Length * 2;
                 progressBar1.Visible = true;
@@ -326,18 +336,20 @@ namespace Hed_Extract
                     int offset = 0;
                     bool final = false;
 
+                    //Loop through and write each file to both .hed and .wad files
                     for (int i = 0; i < names.Length; i++)
                     {
-                        FileStream file = File.Open(names[i], FileMode.Open);
-                        int fileSize = (int)file.Length;
-                        names[i] = names[i].Replace(directory, "");                                            //remove user's directory from path to get file name
+                        using (FileStream file = File.Open(names[i], FileMode.Open))
+                        {
+                            int fileSize = (int)file.Length;
+                            names[i] = names[i].Replace(directory, ""); //remove user's directory from path to get file name
 
-                        if (i + 2 > names.Length) { final = true; }
+                            if (i + 2 > names.Length) { final = true; }
 
-                        writeFileToHed(ref bwHed, names[i], fileSize, offset, final);
-                        writeFileToWad(ref bwWad, file, ref newWad, out offset, final);
+                            writeFileToHed(ref bwHed, names[i], fileSize, offset, final);
+                            writeFileToWad(ref bwWad, file, ref newWad, out offset, final);
 
-                        file.Close();
+                        }
                     }
 
 
@@ -356,7 +368,7 @@ namespace Hed_Extract
                     MessageBox.Show("Error: No files detected in directory: " + directory);
                 }
             }
-        } //datap
+        }
 
         /*
          *  Method Name: writeFileToHed
@@ -371,9 +383,9 @@ namespace Hed_Extract
             int headerSize = 8 + name.Length + 1;                                               //+ 1 ensures every string has at least one padding byte
             byte[] asciiName = System.Text.Encoding.ASCII.GetBytes(name);                       //forces bw to write exact bytes, no extra byte data
 
-            bw.Write(offset);//offset
-            bw.Write(fileSize); //size
-            bw.Write(asciiName); //name
+            bw.Write(offset);
+            bw.Write(fileSize);
+            bw.Write(asciiName);
             bw.Write((byte)0); //one padding byte
 
             while (headerSize % 4 != 0) //padding if needed
@@ -520,9 +532,9 @@ namespace Hed_Extract
             int headerSize = 8 + name.Length + 1;                                               //+ 1 ensures every string has at least one padding byte
             byte[] asciiName = System.Text.Encoding.ASCII.GetBytes(name);                       //forces bw to write exact bytes, no extra byte data
 
-            bw.Write(offset);
-            bw.Write(fileSize);
-            bw.Write(asciiName);
+            bw.Write(offset);//offset
+            bw.Write(fileSize); //size
+            bw.Write(asciiName); //name
             bw.Write((byte)0); //one padding byte
 
             while (headerSize % 4 != 0) //padding if needed
