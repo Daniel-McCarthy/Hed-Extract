@@ -417,27 +417,57 @@ namespace Hed_Extract
 
         } //datap
 
+        /*
+         *  Method Name: aboutToolStripMenuItem_Click
+         *  Purpose: Open About Window
+         *  Arguments: None
+         *  Return: None
+         */
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About about = new About();
             about.Show();
         }
 
+        /*
+         *  Method Name: setMusicStreamModeAndExtractToolStripMenuItem_Click
+         *  Purpose: Extract music/stream .wad file archive contents to a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setMusicStreamModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
             extractWadToFolder();
         }
 
+        /*
+         *  Method Name: setMusicStreamModeAndBuildToolStripMenuItem_Click
+         *  Purpose: Create music/stream .wad file archive from contents of a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setMusicStreamModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createFromFolder();
         }
 
+        /*
+         *  Method Name: setDataModeAndExtractToolStripMenuItem_Click
+         *  Purpose: Extract datap .wad file archive contents to a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setDataModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
             extractWadToFolder();
         }
 
+        /*
+         *  Method Name: setDataModeAndBuildToolStripMenuItem_Click
+         *  Purpose: Create datap .wad file archive from contents of a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setDataModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createFromFolder();
