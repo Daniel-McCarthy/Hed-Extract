@@ -38,6 +38,12 @@ namespace Hed_Extract
             InitializeComponent();
         }
 
+        /*
+         *  Method Name: openFolder
+         *  Purpose: This method prompts the user to select a folder directory for a variety of purposes required for unpacking/packing
+         *  Arguments: char input (Selects folder type to prompt for)
+         *  Return: string path (This is either the selected directory, or an empty string if the prompt failed.)
+         */
         string openFolder(char input)
         {
             if (input == 'e')
@@ -63,8 +69,15 @@ namespace Hed_Extract
             return "";
         }
 
+        /*
+         *  Method Name: openFiles
+         *  Purpose: This method prompts the user to select a .hed or .wad file. It then attempts to locate and load the other in the same directory.
+         *  Arguments: None
+         *  Return: boolean result (True if it was able to locate both. False if any or both failed to open.)
+         */
         private bool openFiles()
         {
+            //Set up Open File Dialogue to filter for .hed and .wad files
             openFileDialog1.Filter = "HED files (*.)|*.hed|WAD files (*.)|*.wad";
             openFileDialog1.InitialDirectory = Application.StartupPath;
 
@@ -72,15 +85,20 @@ namespace Hed_Extract
             {
                 string name = openFileDialog1.FileName;
 
-                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1); //file name w/out directory or extension.
+                //Retrieve file name without Path/Extension
+                name = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1);
                 wadName = name;
 
+                //Retrieve File directory without file name
                 string directory = openFileDialog1.FileName;
-                directory = directory.Substring(0, directory.LastIndexOf('\\') + 1);                                    //directory w/out file name or extension.
+                directory = directory.Substring(0, directory.LastIndexOf('\\') + 1);
 
-                if (File.Exists(directory + name + ".wad"))
+                //Attempt to open both .hed and .wad files
+
+                string wadPath = Path.Combine(directory, name + ".wad");
+                if (File.Exists(wadPath))
                 {
-                    wadFile = File.Open(directory + name + ".wad", FileMode.Open);
+                    wadFile = File.Open(wadPath, FileMode.Open);
                 }
                 else
                 {
@@ -88,9 +106,10 @@ namespace Hed_Extract
                     return false;
                 }
 
-                if (File.Exists(directory + name + ".hed"))
+                string hedPath = Path.Combine(directory, name + ".hed");
+                if (File.Exists(hedPath))
                 {
-                    headerFile = File.Open(directory + name + ".hed", FileMode.Open);
+                    headerFile = File.Open(hedPath, FileMode.Open);
                 }
                 else
                 {
@@ -103,15 +122,20 @@ namespace Hed_Extract
                     return true;
                 }
 
-
-
             }
 
             return false;
         }
 
-        private bool manualOpenFile()                                   //allows user to select any files that weren't automatically found
+        /*
+         *  Method Name: manualOpenFile
+         *  Purpose: If there is no .wad file loaded or no .hed file loaded, this method prompts the user to locate one to open.
+         *  Arguments: None
+         *  Return: boolean result (True if it was able to locate both. False if any or both failed to open.)
+         */
+        private bool manualOpenFile()
         {
+            //If no .wad file has been loaded, prompt the user to locate it.
             if (wadFile == null)
             {
                 MessageBox.Show("Please locate your .wad file.");
@@ -121,12 +145,10 @@ namespace Hed_Extract
                     wadFile = (FileStream)openFileDialog1.OpenFile();
                     string name = openFileDialog1.FileName;
                     wadName = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1);
-
                 }
-
-
             }
 
+            //If no .hed file has been loaded, prompt the user to locate it.
             if (headerFile == null)
             {
                 MessageBox.Show("Please locate your .hed file.");
@@ -143,19 +165,24 @@ namespace Hed_Extract
                 }
             }
 
-            if (headerFile == null || wadFile == null)
+            if (headerFile != null && wadFile != null)
             {
-                return false;
+                return true;
             }
-            else { return true; }
 
+            return false;
 
         }
 
-        //Extract Hed Wad file to folder
+        /*
+         *  Method Name: extractWadToFolder
+         *  Purpose: Attempt to retrieve and load .hed and .wad file. If successful, attempt to extract to a user selected path.
+         *  Arguments: None
+         *  Return: boolean result (True if it was able to locate both. False if any or both failed to open.)
+         */
         private void extractWadToFolder()
         {
-
+            //Attempt to load .hed and .wad files
             if (openFiles() || manualOpenFile())
             {
 
@@ -163,36 +190,41 @@ namespace Hed_Extract
                 List<int> fileSizes = new List<int>();
                 List<int> offsets = new List<int>();
 
-
-
-
                 BinaryReader br = new BinaryReader(headerFile, Encoding.ASCII);
-                while (headerFile.Position != headerFile.Length)
+
+                while (headerFile.Position < headerFile.Length)
                 {
                     int curPos = (int)headerFile.Position;
 
+                    //Read file offset
                     offsets.Add(br.ReadInt32());
-                    fileSizes.Add(br.ReadInt32());                                              //file size
 
-                    List<char> fileName = new List<char>();                                     //file name
-                    while (br.ReadChar() != 0)                                                  //read until null character, makes sure there's at least one
+                    //Read file size
+                    fileSizes.Add(br.ReadInt32());
+
+                    //Read in string file name
+                    List<char> fileName = new List<char>();
+                    while (br.ReadChar() != 0)
                     {
                         headerFile.Seek(-1, SeekOrigin.Current);
                         fileName.Add(br.ReadChar());
                     }
+
                     char[] name = new char[fileName.Count];
                     fileName.CopyTo(name);
                     fileNames.Add(new string(name));
 
+                    //Skip padding. If the length of the entry is not divisible by 4 it will be padded until it is.
                     int newPos = (int)headerFile.Position;
 
-                    while ((newPos - curPos) % 4 != 0)                                          //ensures header size is divisible by 4
+                    while ((newPos - curPos) % 4 != 0)
                     {
                         br.ReadChar();
                         newPos++;
                     }
 
-                    if (headerFile.Length - headerFile.Position == 4)                           //Skips Last 4 bytes of FF
+                    //Skip 4 Byte 0xFFFFFFFF EOF signature
+                    if (headerFile.Length - headerFile.Position == 4)
                     {
                         br.ReadBytes(4);
                     }
@@ -209,10 +241,12 @@ namespace Hed_Extract
 
                 if (isDataP)
                 {
+                    //Extract DataP Wad Format
                     extractWad(fileNames, fileSizes, offsets);
                 }
                 else
                 {
+                    //Extract Music/Stream Wad Format
                     extractMusicStreamWad(fileNames, fileSizes, offsets);
                 }
 
@@ -226,21 +260,34 @@ namespace Hed_Extract
             }
         } //datap / Music / Stream
 
+        /*
+         *  Method Name: extractWad
+         *  Purpose: Extracts file data from datap format .wad file to user selected folder.
+         *  Arguments: List<string> fileNames (List of each file/directory to extract), List<int> fileSizes (List of byte sizes of each file), List<int> offsets (List of positions of each file in the wad)
+         *  Return: None
+         */
         void extractWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
         {
+
+            BinaryReader br = new BinaryReader(wadFile);
+
+            //Prompt user for path to save .wad contents to.
             string directory = openFolder('e');
+
+            //Loop through to extract each file entry found in the .hed file
             for (int i = 0; i < fileNames.Count; i++)
             {
-                BinaryReader br = new BinaryReader(wadFile);
 
+                //Seek to location of next file in .wad (The datap format pads the file data to a length divisible by 2048)
+                wadFile.Position = offsets[i] * 2048;
 
-                wadFile.Position = offsets[i] * 2048;                                                   //get to offset before readBytes
-
+                //Read file in .wad to byte array
                 byte[] file = br.ReadBytes(fileSizes[i]);
 
-
+                //Retrieve file directory from file name
                 string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
 
+                //Create directory if it does not exist, then write the file data to folder
                 if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
                 {
                     Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
@@ -253,23 +300,36 @@ namespace Hed_Extract
             MessageBox.Show("Extraction complete!");
             progressBar1.Visible = false;
             progressBar1.Value = 0;
-        } //datap
+        }
 
+        /*
+         *  Method Name: extractMusicStreamWad
+         *  Purpose: Extracts file data from music/stream format .wad file to user selected folder.
+         *  Arguments: List<string> fileNames (List of each file/directory to extract), List<int> fileSizes (List of byte sizes of each file), List<int> offsets (List of positions of each file in the wad)
+         *  Return: None
+         */
         void extractMusicStreamWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
         {
+
+            BinaryReader br = new BinaryReader(wadFile);
+
+            //Prompt user for path to save .wad contents to.
             string directory = openFolder('e');
+
+            //Loop through to extract each file entry found in the .hed file
             for (int i = 0; i < fileNames.Count; i++)
             {
-                BinaryReader br = new BinaryReader(wadFile);
 
+                //Seek to location of next file in .wad
+                wadFile.Position = offsets[i];
 
-                wadFile.Position = offsets[i];// * 2048;                                                //get to offset before readBytes
-
+                //Read file in .wad to byte array
                 byte[] file = br.ReadBytes(fileSizes[i]);
 
-
+                //Retrieve file directory from file name
                 string secondDirectory = fileNames[i].Substring(0, fileNames[i].LastIndexOf('\\'));
 
+                //Create directory if it does not exist, then write the file data to folder
                 if (!Directory.Exists(directory + '\\' + wadName + '\\' + secondDirectory))
                 {
                     Directory.CreateDirectory(directory + '\\' + wadName + '\\' + secondDirectory);
@@ -282,17 +342,27 @@ namespace Hed_Extract
             MessageBox.Show("Extraction complete!");
             progressBar1.Visible = false;
             progressBar1.Value = 0;
-        } //music/stream
+        }
 
+        /*
+         *  Method Name: createFromFolder
+         *  Purpose: Creates datap format .hed and .wad archive from contents of user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void createFromFolder()
         {
-            string directory = openFolder('b');                                                             //get user selected directory
+            //Prompt user for directory to build the archive from.
+            string directory = openFolder('b');
+
+            //Prompt user for directory to save the .hed and .wad files to.
             string hedWadDirectory = openFolder('c');
+
 
             if (directory != "" && hedWadDirectory != "")
             {
-
-                string[] subDirectories = Directory.GetDirectories(directory);                                  //retrieves all sub directories of user selected folder
+                //Allow user to select a sub-directory of the selected folder if there are any
+                string[] subDirectories = Directory.GetDirectories(directory);
 
                 if (subDirectories.Length > 1)
                 {
@@ -306,10 +376,11 @@ namespace Hed_Extract
                     directory = subDirectories[0];
                 }
 
-                wadName = directory.Substring(directory.LastIndexOf('\\') + 1, directory.Length - directory.LastIndexOf('\\') - 1);     //retrieve fileName from folderName                                   //get name for file to create
+                //Use folder name for naming of new .hed and .wad files.
+                wadName = directory.Substring(directory.LastIndexOf('\\') + 1, directory.Length - directory.LastIndexOf('\\') - 1);
 
-
-                string[] names = Directory.GetFiles(directory + '\\', "*.*", SearchOption.AllDirectories); //get paths to every file in folder
+                //Retrieve file names for all files in selected folder and in the selected folder's subdirectories
+                string[] names = Directory.GetFiles(directory + '\\', "*.*", SearchOption.AllDirectories);
 
                 progressBar1.Maximum = names.Length * 2;
                 progressBar1.Visible = true;
@@ -326,18 +397,20 @@ namespace Hed_Extract
                     int offset = 0;
                     bool final = false;
 
+                    //Loop through and write each file to both .hed and .wad files
                     for (int i = 0; i < names.Length; i++)
                     {
-                        FileStream file = File.Open(names[i], FileMode.Open);
-                        int fileSize = (int)file.Length;
-                        names[i] = names[i].Replace(directory, "");                                            //remove user's directory from path to get file name
+                        using (FileStream file = File.Open(names[i], FileMode.Open))
+                        {
+                            int fileSize = (int)file.Length;
+                            names[i] = names[i].Replace(directory, ""); //remove user's directory from path to get file name
 
-                        if (i + 2 > names.Length) { final = true; }
+                            if (i + 2 > names.Length) { final = true; }
 
-                        writeFileToHed(ref bwHed, names[i], fileSize, offset, final);
-                        writeFileToWad(ref bwWad, file, ref newWad, out offset, final);
+                            writeFileToHed(ref bwHed, names[i], fileSize, offset, final);
+                            writeFileToWad(ref bwWad, file, ref newWad, out offset, final);
 
-                        file.Close();
+                        }
                     }
 
 
@@ -356,8 +429,14 @@ namespace Hed_Extract
                     MessageBox.Show("Error: No files detected in directory: " + directory);
                 }
             }
-        } //datap
+        }
 
+        /*
+         *  Method Name: writeFileToHed
+         *  Purpose: Writes file information to a referenced datap .hed file. (This function writes each file segment individually).
+         *  Arguments: ref BinaryWriter bw (The binary writer for the .hed file), string name (The name of the file being written), int fileSize (The size of the file being written), int offset (The offset of the file being written), bool final (Indicates whether or not to write the EOF marker.)
+         *  Return: None
+         */
         void writeFileToHed(ref BinaryWriter bw, string name, int fileSize, int offset, bool final)
         {
 
@@ -365,9 +444,9 @@ namespace Hed_Extract
             int headerSize = 8 + name.Length + 1;                                               //+ 1 ensures every string has at least one padding byte
             byte[] asciiName = System.Text.Encoding.ASCII.GetBytes(name);                       //forces bw to write exact bytes, no extra byte data
 
-            bw.Write(offset);//offset
-            bw.Write(fileSize); //size
-            bw.Write(asciiName); //name
+            bw.Write(offset);
+            bw.Write(fileSize);
+            bw.Write(asciiName);
             bw.Write((byte)0); //one padding byte
 
             while (headerSize % 4 != 0) //padding if needed
@@ -378,23 +457,27 @@ namespace Hed_Extract
 
             if (final)
             {
-                bw.Write((byte)255); //FF FF FF FF to designate EOF
-                bw.Write((byte)255);
-                bw.Write((byte)255);
-                bw.Write((byte)255);
+                bw.Write((uint)0xFFFFFFFF); //FF FF FF FF to designate EOF
+                
             }
             progressBar1.Value++;
-        } //datap
+        }
 
+        /*
+         *  Method Name: writeFileToWad
+         *  Purpose: Writes file data to a referenced datap .wad file. (This function writes each file segment individually).
+         *  Arguments: ref BinaryWriter bw (The binary writer for the .wad file), FileStream file (Stream for the file to be written), ref FileStream wadFile (Reference to wad file stream), out int offset (Sends out the offset of the file), bool final (Indicates if the more padding will be required.)
+         *  Return: None
+         */
         void writeFileToWad(ref BinaryWriter bw, FileStream file, ref FileStream wadFile, out int offset, bool final)
         {
-
 
             int size = (int)file.Length;
             int padding = 0;
 
             file.CopyTo(wadFile);
 
+            //Pads until the file length + padding is divisible by 2048 if more files need to be written
             if (!final)
             {
                 if (size % 2048 != 0)
@@ -411,49 +494,95 @@ namespace Hed_Extract
                 }
             }
 
+            //Sets out reference variable to offset value to be used for the .hed file.
+            //The file is padded to be divisible by 2048 bytes so that the offset value
+            //can be decreased heavily. The offset is file (length+padding) / 2048.
             offset = (int)wadFile.Length / 2048;
 
             progressBar1.Value++;
 
-        } //datap
+        }
 
+        /*
+         *  Method Name: aboutToolStripMenuItem_Click
+         *  Purpose: Open About Window
+         *  Arguments: None
+         *  Return: None
+         */
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About about = new About();
             about.Show();
         }
 
+        /*
+         *  Method Name: setMusicStreamModeAndExtractToolStripMenuItem_Click
+         *  Purpose: Extract music/stream .wad file archive contents to a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setMusicStreamModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
             extractWadToFolder();
         }
 
+        /*
+         *  Method Name: setMusicStreamModeAndBuildToolStripMenuItem_Click
+         *  Purpose: Create music/stream .wad file archive from contents of a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setMusicStreamModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createFromFolder();
         }
 
+        /*
+         *  Method Name: setDataModeAndExtractToolStripMenuItem_Click
+         *  Purpose: Extract datap .wad file archive contents to a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setDataModeAndExtractToolStripMenuItem_Click(object sender, EventArgs e)
         {
             extractWadToFolder();
         }
 
+        /*
+         *  Method Name: setDataModeAndBuildToolStripMenuItem_Click
+         *  Purpose: Create datap .wad file archive from contents of a user selected folder.
+         *  Arguments: None
+         *  Return: None
+         */
         private void setDataModeAndBuildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             createFromFolder();
         }
 
+        /*
+         *  Method Name: identifyWadType
+         *  Purpose: Determines format of .wad file by comparing the file sizes with the offsets.
+         *  Arguments: List<int> fileSizes (List of byte sizes of each file), List<int> offsets (List of positions of each file in the wad)
+         *  Return: boolean result (If true, then the format is a datap .wad. If false, it is a music/stream .wad format.)
+         */
         private bool identifyWadType(ref List<int> sizes, ref List<int> offsets)
         {
+            //Loops through the offsets and sizes to determine format
             for(int i = 0; i + 1 < offsets.Count; i++)
             {
                 if(offsets[i + 1] < sizes[i])
                 {
-                    return true;                       //an offset smaller than the previous size detected, therefore matches datap format
+                    //The offset is smaller than the previous size
+                    //Therefore it is a datap .wad which uses padding
+                    //to support large files with smaller size values
+                    return true;
                 }
             }
 
-            return false;                                //each offset is larger than the previous size, therefore matches music/stream/thug2 datap format
+            //Each offset is larger than the previous size.
+            //Therefore it is not using the datap padding format.
+            //It matches the music/stream/thug2 datap format.
+            return false;
         }
 
         /*
