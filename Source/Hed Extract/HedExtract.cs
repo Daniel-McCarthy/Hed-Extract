@@ -110,8 +110,15 @@ namespace Hed_Extract
             return false;
         }
 
-        private bool manualOpenFile()                                   //allows user to select any files that weren't automatically found
+        /*
+         *  Method Name: manualOpenFile
+         *  Purpose: If there is no .wad file loaded or no .hed file loaded, this method prompts the user to locate one to open.
+         *  Arguments: None
+         *  Return: boolean result (True if it was able to locate both. False if any or both failed to open.)
+         */
+        private bool manualOpenFile()
         {
+            //If no .wad file has been loaded, prompt the user to locate it.
             if (wadFile == null)
             {
                 MessageBox.Show("Please locate your .wad file.");
@@ -121,12 +128,10 @@ namespace Hed_Extract
                     wadFile = (FileStream)openFileDialog1.OpenFile();
                     string name = openFileDialog1.FileName;
                     wadName = name.Substring(name.LastIndexOf('\\') + 1, name.LastIndexOf('.') - name.LastIndexOf('\\') - 1);
-
                 }
-
-
             }
 
+            //If no .hed file has been loaded, prompt the user to locate it.
             if (headerFile == null)
             {
                 MessageBox.Show("Please locate your .hed file.");
@@ -143,12 +148,12 @@ namespace Hed_Extract
                 }
             }
 
-            if (headerFile == null || wadFile == null)
+            if (headerFile != null && wadFile != null)
             {
-                return false;
+                return true;
             }
-            else { return true; }
 
+            return false;
 
         }
 
