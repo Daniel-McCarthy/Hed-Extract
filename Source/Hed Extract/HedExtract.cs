@@ -207,6 +207,7 @@ namespace Hed_Extract
             //Attempt to load .hed and .wad files
             if (openFiles() || manualOpenFile())
             {
+
                 List<string> fileNames = new List<string>();
                 List<int> fileSizes = new List<int>();
                 List<int> offsets = new List<int>();
@@ -231,11 +232,19 @@ namespace Hed_Extract
                     }
                 }
 
+                // Print out Header data for each file.
+                for (int i = 0; i < fileSizes.Count; i++)
+                {
+                    Console.WriteLine(String.Format("[Header #{0}][{1}][Size:0x{2}][Offset:0x{3}]", i, fileNames[i], fileSizes[i].ToString("X"), offsets[i].ToString("X")));
+                }
+                Console.WriteLine("____________________________________");
+
                 br.Dispose();
                 br.Close();
 
                 progressBar1.Maximum = fileNames.Count;
                 progressBar1.Visible = true;
+
 
                 //Extract Spiderman Wad Format
                 extractSpidermanWad(fileNames, fileSizes, offsets);
@@ -257,6 +266,8 @@ namespace Hed_Extract
             const int paddingAmount = 0x800;
             const int offsetFileStart = paddingAmount * 5;
 
+            int[] actualOffsets = new int[] { 0x2800, 0x2E000, 0x89000, 0x8A000 };
+
             //Prompt user for path to save .wad contents to.
             string directory = openFolder('e');
 
@@ -265,16 +276,42 @@ namespace Hed_Extract
             //Loop through to extract each file entry found in the .hed file
             for (int i = 0; i < fileNames.Count; i++)
             {
+                // Printing out information on the files for debugging purposes
+                String fileOffsetHex = String.Format("0x{0}", (offsets[i] + offsetFileStart).ToString("X"));
+                String fileEndOffsetHex = String.Format("0x{0}", (offsets[i] + fileSizes[i] + offsetFileStart).ToString("X"));
+                String fileSizeHex = String.Format("0x{0}", fileSizes[i].ToString("X"));
+                Console.WriteLine(String.Format("[Filename:{0}][Offset:{1}][Size:{2}][File end:{3}]\t[Header Offset:0x{4}]", fileNames[i], fileOffsetHex, fileSizeHex, fileEndOffsetHex, offsets[i].ToString("X")));
+                
+                // Printing out additional info if the file is one that we know the correct offsets for.
+                if (i < actualOffsets.Length) {
+                    String actualOffset = actualOffsets[i].ToString("X");
+                    String offsetDiff = (actualOffsets[i] - offsets[i]).ToString("X");
+                    String fileSizeWithPadding = (fileSizes[i] + (actualOffsets[i] - offsets[i])).ToString("X");
+                    int fileStart = offsets[i] + offsetFileStart;
+                    int fileEnd = fileStart + fileSizes[i];
+                    int fullFileLengthGuess = fileEnd % paddingAmount == 0
+                        ? fileEnd
+                        : fileEnd + (paddingAmount - (fileEnd % paddingAmount)); // Some files seem to be padded to 0x1000, but some are only 0x800 .. find out if this is consistent or predictable // 0x1000 is divis.. by 0x800..
+                    String fileEndGuess = fullFileLengthGuess.ToString("X");
+                    Console.WriteLine(String.Format("\t[ActualOffset:0x{0}][Diff:0x{1}][Size with Spacing:0x{2}]\n\t[Guess at file position:0x{3}]", actualOffset, offsetDiff, fileSizeWithPadding, fileEndGuess));
+                }
+                
+
                 int size = fileSizes[i];
                 int offset = offsets[i];
 
+                // Leftover logic from the datap format extraction.
                 //Seek to location of next file in .wad (The datap format pads the file data to a length divisible by 2048)
                 //wadFile.Position = offsets[i] * 2048;
+
                 wadFile.Position = offset + offsetFileStart;
 
 
                 //Read file in .wad to byte array
                 byte[] file = br.ReadBytes(size);
+
+                //if (file.Length == 0)
+                //    Console.WriteLine("Found file with 0 bytes!");
 
                 File.WriteAllBytes(directory + '\\' + fileNames[i], file);
                 progressBar1.Value++;
