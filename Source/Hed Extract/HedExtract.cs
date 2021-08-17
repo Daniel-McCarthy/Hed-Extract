@@ -174,6 +174,118 @@ namespace Hed_Extract
 
         }
 
+
+        /* Method Name: readStringSpiderman
+         * Arguments: BinaryReader br (Reader object to wrap header filestream), FileStream headerfile (stream containing data of .hed file to read)
+         * Purpose: Read in the text string for the Spiderman format
+         */
+        private String readStringSpiderman(BinaryReader br, FileStream headerFile)
+        {
+            String text = "";
+            bool foundTerminatorChar = false;
+            int i = 0;
+
+            // There must be at least one terminator character, and the string length must be divisible by 4.
+            while (!foundTerminatorChar || (foundTerminatorChar && (i % 4) != 0))
+            {
+                Char currentCharacter = br.ReadChar();
+                if (currentCharacter != '\0')
+                    text += currentCharacter;
+                else
+                    foundTerminatorChar = true;
+                i++;
+            }
+            return text;
+        }
+
+        /*
+         *  Method Name: extractSpidermanWadToFolder
+         *  Purpose: Attempt to retrieve and load .hed and .wad file. If successful, attempt to extract to a user selected path.
+         */
+        private void extractSpidermanWadToFolder(object sender, EventArgs e)
+        {
+            //Attempt to load .hed and .wad files
+            if (openFiles() || manualOpenFile())
+            {
+                List<string> fileNames = new List<string>();
+                List<int> fileSizes = new List<int>();
+                List<int> offsets = new List<int>();
+
+                BinaryReader br = new BinaryReader(headerFile, Encoding.ASCII);
+
+                while (headerFile.Position < headerFile.Length)
+                {
+                    // Read string file name
+                    String fileName = readStringSpiderman(br, headerFile);
+
+                    // Read file offset
+                    offsets.Add(br.ReadInt32());
+                    //Read file size
+                    fileSizes.Add(br.ReadInt32());
+                    fileNames.Add(fileName);
+
+                    //Skip 1 Byte 0xFF EOF signature
+                    if (headerFile.Length - headerFile.Position == 1)
+                    {
+                        br.ReadBytes(1);
+                    }
+                }
+
+                br.Dispose();
+                br.Close();
+
+                progressBar1.Maximum = fileNames.Count;
+                progressBar1.Visible = true;
+
+                //Extract Spiderman Wad Format
+                extractSpidermanWad(fileNames, fileSizes, offsets);
+
+                wadFile.Close();
+                headerFile.Close();
+                wadName = "";
+            }
+            else
+            {
+                MessageBox.Show("Failed to open .hed and .wad files for extraction.");
+            }
+        } // Spiderman .hed
+
+        private void extractSpidermanWad(List<string> fileNames, List<int> fileSizes, List<int> offsets)
+        {
+            BinaryReader br = new BinaryReader(wadFile);
+
+            const int paddingAmount = 0x800;
+            const int offsetFileStart = paddingAmount * 5;
+
+            //Prompt user for path to save .wad contents to.
+            string directory = openFolder('e');
+
+            List<int> previousOffsets = new List<int>();
+
+            //Loop through to extract each file entry found in the .hed file
+            for (int i = 0; i < fileNames.Count; i++)
+            {
+                int size = fileSizes[i];
+                int offset = offsets[i];
+
+                //Seek to location of next file in .wad (The datap format pads the file data to a length divisible by 2048)
+                //wadFile.Position = offsets[i] * 2048;
+                wadFile.Position = offset + offsetFileStart;
+
+
+                //Read file in .wad to byte array
+                byte[] file = br.ReadBytes(size);
+
+                File.WriteAllBytes(directory + '\\' + fileNames[i], file);
+                progressBar1.Value++;
+            }
+
+            MessageBox.Show("Extraction complete!");
+            progressBar1.Visible = false;
+            progressBar1.Value = 0;
+        }
+
+
         /*
          *  Method Name: extractWadToFolder
          *  Purpose: Attempt to retrieve and load .hed and .wad file. If successful, attempt to extract to a user selected path.
@@ -583,6 +695,11 @@ namespace Hed_Extract
             //Therefore it is not using the datap padding format.
             //It matches the music/stream/thug2 datap format.
             return false;
+        }
+
+        private void HedExtract_Load(object sender, EventArgs e)
+        {
+
         }
 
         /*

@@ -31,16 +31,18 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HedExtract));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.datapToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.extractDataPToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.createDataPToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.musicpstreamspToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.extractMusicpStreamspToolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.createMusicpStreamspToolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.spidermanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.extractWadToFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,29 +61,11 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.datapToolStripMenuItem1,
-            this.musicpstreamspToolStripMenuItem4});
+            this.musicpstreamspToolStripMenuItem4,
+            this.spidermanToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 36);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(260, 23);
-            this.progressBar1.TabIndex = 1;
-            this.progressBar1.Visible = false;
             // 
             // datapToolStripMenuItem1
             // 
@@ -91,7 +75,7 @@
             this.createDataPToolStripMenuItem3});
             this.datapToolStripMenuItem1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.datapToolStripMenuItem1.Name = "datapToolStripMenuItem1";
-            this.datapToolStripMenuItem1.Size = new System.Drawing.Size(166, 22);
+            this.datapToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.datapToolStripMenuItem1.Text = "datap";
             // 
             // extractDataPToolStripMenuItem2
@@ -117,7 +101,7 @@
             this.extractMusicpStreamspToolStripMenuItem5,
             this.createMusicpStreamspToolStripMenuItem6});
             this.musicpstreamspToolStripMenuItem4.Name = "musicpstreamspToolStripMenuItem4";
-            this.musicpstreamspToolStripMenuItem4.Size = new System.Drawing.Size(166, 22);
+            this.musicpstreamspToolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
             this.musicpstreamspToolStripMenuItem4.Text = "musicp/streamsp";
             // 
             // extractMusicpStreamspToolStripMenuItem5
@@ -137,6 +121,40 @@
             this.createMusicpStreamspToolStripMenuItem6.ToolTipText = "Create Musicp / Streamsp / THUG2 Datap Format";
             this.createMusicpStreamspToolStripMenuItem6.Click += new System.EventHandler(this.setMusicStreamModeAndBuildToolStripMenuItem_Click);
             // 
+            // spidermanToolStripMenuItem
+            // 
+            this.spidermanToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractWadToFolderToolStripMenuItem});
+            this.spidermanToolStripMenuItem.Name = "spidermanToolStripMenuItem";
+            this.spidermanToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.spidermanToolStripMenuItem.Text = "Spiderman";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 36);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(260, 23);
+            this.progressBar1.TabIndex = 1;
+            this.progressBar1.Visible = false;
+            // 
+            // extractWadToFolderToolStripMenuItem
+            // 
+            this.extractWadToFolderToolStripMenuItem.Name = "extractWadToFolderToolStripMenuItem";
+            this.extractWadToFolderToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.extractWadToFolderToolStripMenuItem.Text = "Extract Wad to Folder";
+            this.extractWadToFolderToolStripMenuItem.Click += new System.EventHandler(this.extractSpidermanWadToFolder);
+            // 
             // HedExtract
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -151,7 +169,8 @@
             this.MinimizeBox = false;
             this.Name = "HedExtract";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hed Extract ver. 2";
+            this.Text = "Hed Extract ver. 3";
+            this.Load += new System.EventHandler(this.HedExtract_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -173,6 +192,8 @@
         private System.Windows.Forms.ToolStripMenuItem musicpstreamspToolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem extractMusicpStreamspToolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem createMusicpStreamspToolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem spidermanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extractWadToFolderToolStripMenuItem;
     }
 }
 
