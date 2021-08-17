@@ -255,7 +255,7 @@ namespace Hed_Extract
             BinaryReader br = new BinaryReader(wadFile);
 
             const int paddingAmount = 0x800;
-            const int offsetFileStart = paddingAmount * 5;
+            //const int offsetFileStart = paddingAmount * 5;
 
             //Prompt user for path to save .wad contents to.
             string directory = openFolder('e');
@@ -270,7 +270,7 @@ namespace Hed_Extract
 
                 //Seek to location of next file in .wad (The datap format pads the file data to a length divisible by 2048)
                 //wadFile.Position = offsets[i] * 2048;
-                wadFile.Position = offset + offsetFileStart;
+                wadFile.Position = offset;
 
 
                 //Read file in .wad to byte array
